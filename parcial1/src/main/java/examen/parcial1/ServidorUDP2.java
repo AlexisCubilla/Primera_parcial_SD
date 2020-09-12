@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-public class ServidorUDP {
+public class ServidorUDP2 {
 	
 	ArrayList<Datos> list;
 	Integer puertoServidor;
@@ -12,7 +12,7 @@ public class ServidorUDP {
     byte[] Datosrecibidos;
     byte[] Datosenviados;
 	
-	public ServidorUDP( Integer serverPort)
+	public ServidorUDP2( Integer serverPort)
 	{
 		list = new ArrayList<Datos>();
 		puertoServidor = serverPort;
@@ -26,21 +26,22 @@ public class ServidorUDP {
 		Datosenviados = new byte[1024];
 	}
 	
-	
-	public void run()
+	public static void main(String[] args)throws Exception
 	{
+		ServidorUDP2 servidor = new ServidorUDP2( 6666 );
+		
 		while( true )
 		{
 			
-	        Datosrecibidos = new byte[1024];
+			servidor.Datosrecibidos = new byte[1024];
 	
-	        DatagramPacket receivePacket = new DatagramPacket(Datosrecibidos, Datosrecibidos.length);
+	        DatagramPacket receivePacket = new DatagramPacket(servidor.Datosrecibidos, servidor.Datosrecibidos.length);
 	
 	        System.out.println("Esperando a algun cliente... ");
 	
 	        // 4) Receive LLAMADA BLOQUEANTE
 	        try {
-	        	serverSocket.receive(receivePacket);
+	        	servidor.serverSocket.receive(receivePacket);
 	        }catch(IOException e){
 	        	System.err.println(e);
 	        }
@@ -60,9 +61,9 @@ public class ServidorUDP {
 	        
 			if ( operacion.equals(1) )
 			{
-				list.add(dat);
+				servidor.list.add(dat);
 				dat = new Datos("1");
-				envio( dat , IPAddress , port);
+				servidor.envio( dat , IPAddress , port);
 				System.out.println( "datos metereologicos recibido operacion 1 ");
 				
 			}
@@ -70,7 +71,7 @@ public class ServidorUDP {
 			{
 				String ciudad = dat.getCiudad();
 				Datos res = new Datos();
-			    for(Datos m : list) {
+			    for(Datos m : servidor.list) {
 			        if ( m.getCiudad().equals(ciudad) ) {
 			            res = m;
 			        }
@@ -78,7 +79,7 @@ public class ServidorUDP {
 			    dat = new Datos("2");
 			    dat.setTemperatura( res.getTemperatura() );
 			    dat.setCiudad( res.getCiudad() );
-			    envio( dat , IPAddress, port);
+			    servidor.envio( dat , IPAddress, port);
 			    System.out.println( "datos metereologicos enviado operacion 2 ");
 			}
 			else if( operacion.equals(3) )
@@ -88,7 +89,7 @@ public class ServidorUDP {
 				String tempPromedio;
 				String fecha = dat.getfecha();
 				
-			    for(Datos m : list) {
+			    for(Datos m : servidor.list) {
 			        if ( m.getfecha().equals(fecha) ) {
 			            temperatura = temperatura + Integer.parseInt( m.getTemperatura() );
 			            contador++;
@@ -100,7 +101,7 @@ public class ServidorUDP {
 			    dat = new Datos("3");
 			    dat.setTemperatura( tempPromedio );
 			    dat.setfecha( fecha );
-			    envio(dat , IPAddress, port);
+			    servidor.envio(dat , IPAddress, port);
 			    System.out.println( "datos metereologicos enviado operacion 3 ");
 			}
 			else
@@ -109,8 +110,8 @@ public class ServidorUDP {
 			}
 	        
 		}
+		
 	}
-	
 	public void envio( Datos dat, InetAddress IPAddress , int port )
 	{
 		Datosenviados = dat.toJSON().getBytes();
@@ -121,13 +122,5 @@ public class ServidorUDP {
 		} catch (IOException e) {
 			System.err.println(e);
 		}
-	}
-	
-	public static void main(String[] args)
-	{
-		ServidorUDP servidor = new ServidorUDP( 6666 );
-		servidor.run();
-		
-		
 	}
 }

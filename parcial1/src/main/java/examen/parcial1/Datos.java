@@ -40,14 +40,14 @@ public class Datos{
 		this.hora = "0";
 	}
 	
-	public Datos(String operacion, String fecha) {
+	public Datos(String operacion, String ciudad) {
 		this.operacion = operacion;
 		this.id = "0";
-		this.ciudad = "0";
+		this.ciudad = ciudad;
 		this.humedad = "0";
 		this.temperatura = "0";
 		this.velocidad = "0";
-		this.fecha = fecha;
+		this.fecha = "0";
 		this.hora = "0";
 	}
 	
@@ -101,7 +101,7 @@ public class Datos{
 	public String getfecha() {
 		return fecha;
 	}
-	public void sefecha(String fecha) {
+	public void setfecha(String fecha) {
 		this.fecha = fecha;
 	}
 	public String getHora() {

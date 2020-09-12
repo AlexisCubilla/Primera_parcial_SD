@@ -1,5 +1,3 @@
-Se creo 3 clases. Server, cliente, y Datos
+Se creo 3 clases. ServerUDP2, clienteUDP", y Datos
 
-en la clase datos esta el objeto y el json del mismo
-
-no tuve tiempo para codificar el servidor.
+en la clase datos estan el objeto y el json del mismo.

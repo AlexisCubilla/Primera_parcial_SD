@@ -3,7 +3,7 @@ package examen.parcial1;
 import java.io.*;
 import java.net.*;
 
-	public class ClienteUDP {
+	public class ClienteUDP2 {
 		
 		String direccion_Servidor;
 		Integer puerto_Servidor;
@@ -13,7 +13,7 @@ import java.net.*;
 		byte[] sendData;
 		byte[] receiveData;
 		
-		public ClienteUDP( String serverAddress, Integer serverPort ) {
+		public ClienteUDP2( String serverAddress, Integer serverPort ) {
 			inicializar( serverAddress , serverPort );
 		}
 	    
@@ -34,7 +34,26 @@ import java.net.*;
 			}
 	  
 	    }
-		public void envio() throws IOException
+		
+		
+		public static void main(String[] args)
+		{
+			ClienteUDP2 cliente = new ClienteUDP2("localhost" , 6666);
+	
+			while ( true )
+			{
+				try {
+					cliente.envio();
+					cliente.recibir();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
+			}
+			
+		}
+		public  void envio() throws IOException
 		{
 			try {
 				Datos dat;
@@ -81,7 +100,8 @@ import java.net.*;
 				}
 				else if( operation.equals(3) )
 				{
-					dat= new Datos( in);
+					dat= new Datos(in);
+					
 					
 			        String datoPaquete = dat.toJSON();
 			        sendData = datoPaquete.getBytes();
@@ -98,10 +118,10 @@ import java.net.*;
 		     
 		}
 		
-		public void receiveMessage() throws IOException
+		public void recibir() throws IOException
 		{
 			 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-	        //Vamos a hacer una llamada BLOQUEANTE entonces establecemos un timeout maximo de espera
+	        
 	        //client_Socket.setSoTimeout(10000); no necesario
 
 	        try {
@@ -127,36 +147,11 @@ import java.net.*;
 	            }
 	            
 
-	            
-
 	        } catch (SocketTimeoutException ste) {
 
 	            System.out.println("TimeOut: El paquete udp se asume perdido.");
 	        }
 		}
 		
-		public void ejecutar() 
-		{
-			Boolean flag = true;
-			while ( flag )
-			{
-				try {
-					envio();
-					receiveMessage();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 		
-			}
-		}
-		
-		public static void main(String[] args)
-		{
-			ClienteUDP cliente = new ClienteUDP("127.0.0.1" , 6666);
-			cliente.ejecutar();
-			
-			
-		}
 	}
-
